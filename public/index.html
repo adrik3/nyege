@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nyege – Events in Rwanda</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#f4f6fb;--surface:#fff;--ink:#14122b;--muted:#5d5b78;--line:#dcdff0;--accent:#ffd23f;--accent-ink:#14122b;--go:#1a8f5f;--hot:#e8445a;--hero:#14122b;--hero-ink:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f0e1f;--surface:#1a1934;--ink:#f1f0ff;--muted:#a9a7c6;--line:#2e2c52;--hero:#1a1934}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "DM Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque","DM Sans",system-ui,sans-serif;line-height:1.1;margin:0}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--hot);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 18px}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:14px 0}
+.logo{font:800 26px "Bricolage Grotesque",sans-serif;letter-spacing:-.5px}
+.logo i{font-style:normal;background:var(--accent);color:var(--accent-ink);padding:0 7px;border-radius:8px;margin-right:2px}
+.btn{border:0;border-radius:10px;padding:11px 18px;font-weight:700;cursor:pointer;background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;border:2px solid currentColor}
+.btn.pay{background:var(--go);color:#fff;width:100%;padding:14px;font-size:17px}
+.hero{background:var(--hero);color:var(--hero-ink);border-radius:0 0 28px 28px;padding:10px 0 34px}
+.hero .top .btn.ghost{color:var(--hero-ink)}
+.hero h1{font-size:clamp(34px,8vw,64px);font-weight:800;max-width:11em;margin:22px 0 12px}
+.hero p{max-width:34em;opacity:.85;margin:0 0 22px}
+.search{display:flex;gap:8px;max-width:520px}
+.search input{flex:1;min-width:0;padding:13px 14px;border-radius:10px;border:0;background:#fff;color:#14122b}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:18px 0 6px}
+.chip{border:2px solid var(--line);background:var(--surface);border-radius:99px;padding:7px 15px;font-weight:500;cursor:pointer;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px;padding:14px 0 40px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;text-align:left;padding:0;cursor:pointer}
+.card .art{height:130px;display:flex;align-items:flex-end;padding:12px 14px;color:#fff;font:800 22px "Bricolage Grotesque",sans-serif}
+.card .body{padding:14px;display:grid;gap:4px}
+.card h3{font-size:20px}.muted{color:var(--muted);font-size:14px}
+.price{font-weight:700;margin-top:6px}
+.empty{padding:40px 0;color:var(--muted)}
+dialog{border:0;border-radius:18px;padding:0;width:min(460px,calc(100% - 24px));background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(10,8,30,.6)}
+.dlg{padding:20px;display:grid;gap:14px}
+.dlg .x{justify-self:end;background:none;border:0;font-size:26px;cursor:pointer;line-height:1}
+label{display:grid;gap:5px;font-weight:500;font-size:14px}
+.f{padding:11px 12px;border:2px solid var(--line);border-radius:10px;background:var(--bg)}
+.tix{display:grid;gap:8px}
+.tier{display:flex;justify-content:space-between;align-items:center;border:2px solid var(--line);border-radius:12px;padding:10px 12px}
+.qty{display:flex;align-items:center;gap:10px}
+.qty button{width:32px;height:32px;border-radius:50%;border:2px solid var(--line);background:var(--bg);cursor:pointer;font-weight:700}
+.total{display:flex;justify-content:space-between;font:800 20px "Bricolage Grotesque",sans-serif}
+.note{font-size:13px;color:var(--muted)}
+.ticket{border:2px dashed var(--ink);border-radius:14px;padding:14px;display:grid;gap:2px}
+.code{font:700 22px ui-monospace,monospace;letter-spacing:2px;background:var(--accent);color:var(--accent-ink);padding:6px 10px;border-radius:8px;justify-self:start;margin-top:6px}
+footer{padding:26px 0 40px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="hero"><div class="wrap">
+  <header class="top"><div class="logo"><i>N</i>yege</div><button class="btn ghost" id="mine">My tickets</button></header>
+  <h1>Find an event. Pay with Mobile Money. Get in.</h1>
+  <p>Concerts, comedy, sports and community nights across Rwanda. Your ticket arrives with a code you show at the gate.</p>
+  <div class="search"><input id="q" type="search" placeholder="Search events or places" aria-label="Search events or places"></div>
+</div></div>
+
+<main class="wrap">
+  <div class="chips" id="chips" role="group" aria-label="Categories"></div>
+  <div class="grid" id="grid"></div>
+</main>
+<div class="wrap"><footer>Nyege – tickets for events in Rwanda. Pay with MTN Mobile Money, Airtel Money or card.</footer></div>
+
+<dialog id="dlg"></dialog>
+
+<script>
+// ===== SETTINGS: put your payment details here =====
+const CONFIG = {
+  currency: "RWF",
+  // Paste your gateway payment link (Flutterwave, Pesapal, Paypack...) to take real payments.
+  // Leave empty to run in demo mode (no money moves).
+  PAY_LINK: ""
+};
+const EVENTS = [
+  {id:1,cat:"Music",name:"Kigali Sunset Live",date:"Sat 12 Dec 2026, 6:00 pm",place:"Kigali Arena, Remera",c:"#e8445a",tiers:[["Regular",10000],["VIP",30000]]},
+  {id:2,cat:"Comedy",name:"Laugh Out Loud Night",date:"Fri 18 Dec 2026, 7:30 pm",place:"Camp Kigali, Nyarugenge",c:"#7a3df0",tiers:[["Regular",5000],["VIP",15000]]},
+  {id:3,cat:"Sports",name:"Derby Day: Gikundiro vs Rayon",date:"Sun 20 Dec 2026, 3:00 pm",place:"Amahoro Stadium",c:"#1a8f5f",tiers:[["Stand",3000],["VIP",12000]]},
+  {id:4,cat:"Music",name:"Lake Kivu Beach Party",date:"Sat 26 Dec 2026, 2:00 pm",place:"Gisenyi, Rubavu",c:"#0b84c6",tiers:[["Regular",8000],["Table for 4",60000]]},
+  {id:5,cat:"Community",name:"Umuganda Street Market",date:"Sat 2 Jan 2027, 9:00 am",place:"Kimironko Market",c:"#d9822b",tiers:[["Free entry",0]]},
+  {id:6,cat:"Culture",name:"Intore Dance Festival",date:"Fri 8 Jan 2027, 5:00 pm",place:"Huye Cultural Centre",c:"#b3367a",tiers:[["Regular",6000],["VIP",20000]]}
+];
+const $=s=>document.querySelector(s);
+const fmt=n=>n===0?"Free":n.toLocaleString("en-US")+" "+CONFIG.currency;
+let cat="All",txt="";
+const cats=["All",...new Set(EVENTS.map(e=>e.cat))];
+function chips(){$("#chips").innerHTML=cats.map(c=>`<button class="chip" aria-pressed="${c===cat}" data-c="${c}">${c}</button>`).join("")}
+function list(){
+  const r=EVENTS.filter(e=>(cat==="All"||e.cat===cat)&&(e.name+e.place).toLowerCase().includes(txt));
+  $("#grid").innerHTML=r.length?r.map(e=>`<button class="card" data-id="${e.id}"><div class="art" style="background:${e.c}">${e.cat}</div><div class="body"><h3>${e.name}</h3><span class="muted">${e.date}</span><span class="muted">${e.place}</span><span class="price">From ${fmt(Math.min(...e.tiers.map(t=>t[1])))}</span></div></button>`).join(""):`<p class="empty">No events match your search. Try another word or category.</p>`;
+}
+$("#chips").onclick=e=>{const b=e.target.closest("[data-c]");if(b){cat=b.dataset.c;chips();list()}};
+$("#q").oninput=e=>{txt=e.target.value.toLowerCase().trim();list()};
+$("#grid").onclick=e=>{const b=e.target.closest("[data-id]");if(b)openEvent(+b.dataset.id)};
+
+const dlg=$("#dlg");
+function show(html){dlg.innerHTML=`<div class="dlg"><button class="x" aria-label="Close" onclick="dlg.close()">×</button>${html}</div>`;if(!dlg.open)dlg.showModal()}
+function openEvent(id){
+  const ev=EVENTS.find(e=>e.id===id);let tier=0,qty=1;
+  const draw=()=>{
+    const t=ev.tiers[tier];
+    show(`<h2>${ev.name}</h2><div class="muted">${ev.date}<br>${ev.place}</div>
+    <div class="tix">${ev.tiers.map((x,i)=>`<label class="tier"><span><input type="radio" name="t" value="${i}" ${i===tier?"checked":""}> ${x[0]}</span><b>${fmt(x[1])}</b></label>`).join("")}</div>
+    <div class="qty"><span>Tickets</span><button id="m" aria-label="Fewer">−</button><b id="n">${qty}</b><button id="p" aria-label="More">+</button></div>
+    <label>Phone number for your ticket<input class="f" id="ph" type="tel" inputmode="tel" placeholder="07X XXX XXXX"></label>
+    <label>Pay with<select class="f" id="how"><option>MTN Mobile Money</option><option>Airtel Money</option><option>Card</option></select></label>
+    <div class="total"><span>Total</span><span>${fmt(t[1]*qty)}</span></div>
+    <button class="btn pay" id="go">Pay ${fmt(t[1]*qty)}</button>
+    <p class="note" id="err" role="alert"></p>`);
+    dlg.querySelectorAll('input[name="t"]').forEach(r=>r.onchange=()=>{tier=+r.value;draw()});
+    $("#m").onclick=()=>{qty=Math.max(1,qty-1);draw()};
+    $("#p").onclick=()=>{qty=Math.min(10,qty+1);draw()};
+    $("#go").onclick=()=>{
+      const ph=$("#ph").value.replace(/\s/g,"");
+      if(!/^(\+?250|0)?7\d{8}$/.test(ph)){$("#err").textContent="Enter a valid Rwandan phone number, like 0788 123 456.";return}
+      const b=$("#go");b.disabled=true;b.textContent="Starting payment…";
+      fetch("/api/create-order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({eventId:ev.id,tier:t[0],qty,phone:ph})})
+        .then(r=>r.json()).then(d=>{if(d.link){location.href=d.link}else{throw new Error(d.error)}})
+        .catch(e=>{b.disabled=false;b.textContent="Pay";$("#err").textContent=(e&&e.message)||"Payment could not start. Try again."});
+    };
+  };
+  draw();
+}
+function code(){const a="ABCDEFGHJKMNPQRSTUVWXYZ23456789";let s="NY-";for(let i=0;i<6;i++)s+=a[Math.floor(Math.random()*a.length)];return s}
+function issue(ev,t,qty,ph){
+  const tk={code:code(),ev:ev.name,date:ev.date,place:ev.place,tier:t[0],qty,ph};
+  try{const k=JSON.parse(localStorage.getItem("nyege")||"[]");k.push(tk);localStorage.setItem("nyege",JSON.stringify(k))}catch(e){}
+  show(`<h2>You're in!</h2><p class="note">${CONFIG.PAY_LINK?"Complete the payment in the new tab. ":"Demo mode: no money was taken. "}Show this code at the gate.</p>${tkHtml(tk)}`);
+}
+const tkHtml=t=>`<div class="ticket"><b>${t.ev}</b><span class="muted">${t.date} · ${t.place}</span><span>${t.qty} × ${t.tier}</span><span class="code">${t.code}</span></div>`;
+$("#mine").onclick=()=>{
+  let k=[];try{k=JSON.parse(localStorage.getItem("nyege")||"[]")}catch(e){}
+  show(`<h2>My tickets</h2>${k.length?k.slice().reverse().map(tkHtml).join(""):`<p class="empty">No tickets yet. Pick an event and buy your first ticket.</p>`}`);
+};
+(function(){
+  const ref=new URLSearchParams(location.search).get("ref");if(!ref)return;let n=0;
+  show('<h2>Checking your payment…</h2><p class="note">This takes a few seconds.</p>');
+  const tick=()=>fetch("/api/order-status?ref="+encodeURIComponent(ref)).then(r=>r.json()).then(d=>{
+    if(d.status==="paid"){
+      show(`<h2>You’re in!</h2><p class="note">Show these codes at the gate. Save this page link: ${location.href}</p>`+d.codes.map(c=>tkHtml({ev:d.event.name,date:d.event.date,place:d.event.place,qty:1,tier:d.tier,code:c})).join(""));
+    }else if(++n<15){setTimeout(tick,2000)}
+    else{show('<h2>Payment not confirmed yet</h2><p class="note">If money left your account, reopen this page in a few minutes. Your tickets will appear here once the payment is confirmed.</p>')}
+  }).catch(()=>{if(++n<15)setTimeout(tick,2000)});
+  tick();
+})();
+chips();list();
+</script>
+</body>
+</html>
